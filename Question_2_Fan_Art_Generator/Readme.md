@@ -22,7 +22,7 @@ cd docker
 docker build -t <image_name> .
 ```
 
-**Note** : If using a locally built docker image, please change the image name in `docker/fine_tune_custom.sh` and `docker/fine_tune_dataset.sh` for the changes to be reflected.
+**Note** : If using a locally built docker image, please change the image name in `train.sh` and `run_inferences.sh` for the changes to be reflected.
 
 
 ## Fine Tuning
