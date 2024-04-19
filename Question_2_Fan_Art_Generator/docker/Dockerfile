@@ -1,0 +1,61 @@
+FROM nvidia/cuda:11.8.0-runtime-ubuntu20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+    apt install -y bash \
+    build-essential \
+    git \
+    git-lfs \
+    curl \
+    ca-certificates \
+    libsndfile1-dev \
+    libgl1 \
+    python3.8 \
+    python3-pip \
+    python3.8-venv && \
+    rm -rf /var/lib/apt/lists
+
+# make sure to use venv
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# pre-install the heavy dependencies (these can later be overridden by the deps from setup.py)
+RUN python3 -m pip install --no-cache-dir --upgrade pip uv==0.1.11 && \
+    python3 -m uv pip install --no-cache-dir \
+    torch \
+    torchvision \
+    torchaudio \
+    invisible_watermark && \
+    python3 -m pip install --no-cache-dir \
+    accelerate \
+    datasets \
+    hf-doc-builder \
+    huggingface-hub \
+    Jinja2 \
+    librosa \
+    numpy \
+    scipy \
+    tensorboard \
+    transformers \
+    pytorch-lightning
+
+RUN mkdir -p /home/user/fanplay_iot
+WORKDIR /home/user/fanplay_iot
+
+RUN git clone https://github.com/huggingface/diffusers.git
+WORKDIR /home/user/fanplay_iot/diffusers
+
+RUN python3 -m pip install .
+
+WORKDIR /home/user/fanplay_iot/
+COPY ./fine_tune_dataset.sh .
+COPY ./fine_tune_custom.sh .
+COPY ./config.yaml .
+RUN chmod +x fine_tune_dataset.sh
+RUN chmod +x fine_tune_custom.sh
+
+COPY ./run_inferences.py .
+
+RUN apt clean
+RUN rm -rf /var/lib/apt/lists/*
