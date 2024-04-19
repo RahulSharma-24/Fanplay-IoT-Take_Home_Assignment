@@ -85,7 +85,10 @@ python demo/demo_action_detection.py demo/Test_Videos/Demo_Fedrer_Tennis.mp4 dem
 ```
 
 
-IThe pose estimation and prediction pipeline involves two models, namely `skeleton` for tracking key points and `kinetic` for prediction of the action being performed.
+The pose estimation and prediction pipeline involves the use of two datasets, namely `skeleton` for tracking key points and `kinetic` for prediction of the action being performed. **Faster-RCNN** is used as the `human detector`, **HRNetw32** as the `pose estimator`, **PoseC3D-NTURGB+D-60-XSub-Keypoint** as the `skeleton-based action recognizer`. **tsn** model was trained on 'Kinetic dataset' for action prediction.
+
+**Note**: While running `demo/demo_action_detection.py`, please change the path of the video_file in order to generate the outputs of different videos.
+
 
 
 # Results
